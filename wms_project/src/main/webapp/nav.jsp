@@ -125,42 +125,11 @@ if (session == null ||
 
       
     </ul>
-    
-     <!-- <span style="color: white; margin-right: 5px;">[<%=mpart%>]&nbsp;&nbsp;<a href="#"><%=name%> (<%=id%>)</a> 님 환영합니다.</span> --> 
-     	<cr:if test="${sessionScope.mpart == '본사'}">
-    		<span style="color: white; margin-right: 5px;">[${mpart}]&nbsp;&nbsp;<a href="../config/configMain.do">${name} (${id})</a> 님 환영합니다.</span>
-		</cr:if>
 
-		<cr:if test="${sessionScope.mpart == '지점'}">
-    		<span style="color: white; margin-right: 5px;">[${mspot}]&nbsp;&nbsp;<a href="../config/configMain.do">${name} (${id})</a> 님 환영합니다.</span>
-		</cr:if>
-	
-	
 	
       <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="location.href='/member/logout.do'">로그아웃</button>
   </div>
 </nav>
 
 
-
-
-	<div class="modal fade" id="mobileModal" tabindex="-1" role="dialog" aria-labelledby="mobileModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-s" role="document">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title" id="mobileModalLabel"> 배송기사 모바일 전용 페이지</h5>
-	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	                    <span aria-hidden="true">&times;</span>
-	                </button>
-	            </div>
-	            <div class="modal-body">
-	                <!-- 모바일 페이지를 iframe을 통해 로드 -->
-	                <iframe src="../deliveryMobile/mobileLogin.jsp" style="width: 100%; height: 600px; border: none;"></iframe>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
 
