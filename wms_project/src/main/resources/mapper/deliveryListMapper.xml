@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wms_project.mapper.DeliveryListMapper">
+	
+	<insert id="deliveryInsert" parameterType="wms_project.dto.DeliveryListDTO">
+		INSERT INTO delivery (dcode,dspot,dname,dpass,demail,dhp,didnum,dimgnm,dimgrenm,dimgurl,dimgck,dapprove,ddate)
+		VALUES (#{dcode},#{dspot},#{dname},#{dpass},#{demail},#{dhp},#{didnum},#{dimgnm},#{dimgrenm},#{dimgurl},#{dimgck},'일시정지',now())
+	</insert>
+
+	<select id="deliveryList" resultType="wms_project.dto.DeliveryListDTO" parameterType="Map">
+	    SELECT didx, dcode, dspot, dname, demail, dhp, didnum, dimgck, dapprove
+	    FROM delivery
+	    <where>
+	        <if test="mspot != '본사'">
+	            AND dspot = #{mspot}
+	        </if>
+	        <if test="spot != null and spot != '전체'">
+	            AND dspot = #{spot}
+	        </if>
+	        <if test="part != null and search != null and search != ''">
+	            <choose>
+	                <when test="part == '기사명'">
+	                    AND dname LIKE CONCAT('%', #{search}, '%')
+	                </when>
+	                <when test="part == '사원번호'">
+	                    AND dcode LIKE CONCAT('%', #{search}, '%')
+	                </when>
+	                <when test="part == '연락처'">
+	                    AND dhp LIKE CONCAT('%', #{search}, '%')
+	                </when>
+	            </choose>
+	        </if>
+	    </where>
+	    ORDER BY didx DESC
+	    LIMIT ${startno}, ${endno}
+	</select>
+
+	<select id="deliveryMspotCtn" resultType="String" parameterType="String">
+	    SELECT COUNT(*) AS ctn
+	    FROM delivery
+	    <if test="mspot != '본사'">
+		    <where>
+		        <if test="mspot != '본사'">
+		            AND dspot = #{mspot}
+		        </if>
+		        <if test="spot != null and spot != '전체'">
+		            AND dspot = #{spot}
+		        </if>
+		        <if test="part != null and search != null and search != ''">
+		            <choose>
+		                <when test="part == '기사명'">
+		                    AND dname LIKE CONCAT('%', #{search}, '%')
+		                </when>
+		                <when test="part == '사원번호'">
+		                    AND dcode LIKE CONCAT('%', #{search}, '%')
+		                </when>
+		                <when test="part == '연락처'">
+		                    AND dhp LIKE CONCAT('%', #{search}, '%')
+		                </when>
+		            </choose>
+		        </if>
+		    </where>
+	   </if> 
+	</select>
+	
+	<select id="deliveryCtn" resultType="String" parameterType="String">
+		SELECT COUNT(*) AS ctn 
+		FROM delivery		
+	</select>
+	
+	 <update id="deliveryApprove"  parameterType="wms_project.dto.DeliveryListDTO">
+	 	UPDATE delivery
+   	 	SET dapprove = #{dapprove}
+    	WHERE didx = #{didx}
+ 	</update>
+ 	
+	<select id="deliveryModifyIdx" resultType="wms_project.dto.DeliveryListDTO" parameterType="String"> 
+	 	SELECT * FROM delivery 
+	 	WHERE didx = #{didx}
+	</select>
+	
+	<update id="deliveryModify" parameterType="wms_project.dto.DeliveryListDTO">
+		UPDATE delivery 
+		SET dname=#{dname}, dpass=#{dpass}, demail=#{demail},dhp=#{dhp}, dimgnm=#{dimgnm}, 
+				dimgrenm=#{dimgrenm}, dimgurl=#{dimgurl}, dimgck=#{dimgck}, dapprove='일시정지', dmodify=now()
+		WHERE didx = #{didx}
+	</update>
+	
+	<select id="approveCk" resultType="wms_project.dto.DeliveryListDTO" parameterType="String">
+		SELECT dcode, dapprove
+		FROM delivery
+		WHERE = #{dcode}
+	</select>
+	
+</mapper>

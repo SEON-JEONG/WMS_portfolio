@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wms_project.mapper.OfficeMapper">
+
+	<!-- 지점 전체 리스트 출력 -->
+	<select id="office_list" resultType="wms_project.dto.OfficeDTO">
+		select oidx, officename, mname, mhp, otel, memail, opost, oroad, oaddress from office
+		where oview = 'Y' order by odate desc
+	</select>
+
+	<!-- 지점 검색 리스트 출력 -->
+	<select id="search_office" parameterType="String" resultType="wms_project.dto.OfficeDTO">
+		select oidx, officename, mname, mhp, otel, memail, opost, oroad, oaddress from office
+		where officename like concat('%',#{search},'%') and oview = 'Y' order by odate desc
+	</select>
+
+	<!-- 페이징 + 지점 리스트 출력 / 검색 리스트 출력 -->
+	<select id="office_list_paging" parameterType="Map" resultType="wms_project.dto.OfficeDTO">
+		select oidx, officename, mname, mhp, otel, memail, opost, oroad, oaddress from office
+		where oview = 'Y'
+		<if test="search != null">
+			and officename like concat('%',#{search},'%')
+		</if>
+		order by odate desc
+		limit #{startno}, #{items}
+	</select>
+
+	<!-- 지점 개수 구하기 -->
+	<select id="count_office" parameterType="String" resultType="Integer">
+		select count(*) from office where
+		<if test="search != null">
+			officename like concat('%',#{search},'%') and
+		</if>
+		oview = 'Y'
+	</select>
+
+
+	<!-- 지점 삭제 - 데이터베이스에서는 삭제되지 않는다 -->
+	<update id="delete_office" parameterType="String">
+		update office set oview = 'N' where oidx = #{oidx}
+	</update>
+
+	<!-- 지점명 중복 확인 -->
+	<select id="check_officename" parameterType="String" resultType="String">
+		select count(*) as cnt from office where officename like concat('%',#{officename},'%') and oview = 'Y';
+	</select>
+
+	<!-- 관리자 팝업 리스트 출력 -->
+	<select id="poplist_member" resultType="wms_project.dto.MemberDTO">
+		select midx, mid, mname, mjob, memail, mhp, approve from member where mpart = '지점' and approve not in ('퇴사', '휴직') order by midx desc
+	</select>
+
+	<!-- 관리자 팝업 검색 리스트 출력 -->
+	<select id="search_member" parameterType="Map" resultType="wms_project.dto.MemberDTO">
+		select * from member
+		<choose>
+			<when test="part == '이름'">
+				where mname like concat('%',#{search},'%')
+			</when>
+			<when test="part == '아이디'">
+				where mid like concat('%',#{search},'%')
+			</when>
+			<when test="part == '연락처'">
+				where mhp like concat('%',#{search},'%')
+			</when>
+		</choose>
+		and mpart = '지점' and approve not in ('퇴사', '휴직') order by mdate desc
+	</select>
+
+	<!-- 페이징 + 관리자 리스트 출력 -->
+	<select id="poplist_paging" parameterType="Map" resultType="wms_project.dto.MemberDTO">
+		select * from member where
+		<if test="search != null and search != ''">
+			<choose>
+				<when test="part == '이름'">
+					mname like concat('%',#{search},'%') and
+				</when>
+				<when test="part == '아이디'">
+					mid like concat('%',#{search},'%') and
+				</when>
+				<when test="part == '연락처'">
+					mhp like concat('%',#{search},'%') and
+				</when>
+			</choose>
+		</if>
+		mpart = '지점' and approve not in ('퇴사', '휴직') order by mdate desc
+	</select>
+
+	<!-- 관리자 수 -->
+	<select id="count_member" resultType="Integer">
+		select count(*) from member where mpart = '지점' and approve not in ('퇴사', '휴직')
+	</select>
+
+	<!-- 팝업 관리자 적용 -->
+	<select id="apply_member" parameterType="String" resultType="wms_project.dto.MemberDTO">
+		select midx, mname, mhp, memail from member where midx = #{midx}
+	</select>
+	
+	<!-- 신규 지점 등록 -->
+	<insert id="insert_office" parameterType="wms_project.dto.OfficeDTO">
+		insert into office (oidx, officename, mname, mhp, otel, memail, opost, oroad, oaddress, odate) values ('0', #{officename}, #{mname}, #{mhp}, #{otel}, #{memail}, #{opost}, #{oroad}, #{oaddress}, now())
+	</insert>
+
+	<!-- 지점 수정 페이지 출력 -->
+	<select id="modify_office" parameterType="String" resultType="wms_project.dto.OfficeDTO">
+		select oidx, officename, mname, memail, mhp, otel, opost, oroad, oaddress from office where oidx = #{oidx}
+	</select>
+
+	<!-- 지점 정보 수정 -->
+	<update id="update_office" parameterType="wms_project.dto.OfficeDTO">
+		update office set officename=#{officename}, mname=#{mname}, mhp=#{mhp}, memail=#{memail}, otel=#{otel}, opost=#{opost},
+		oroad=#{oroad}, oaddress=#{oaddress} where oidx = #{oidx}
+	</update>
+
+</mapper>

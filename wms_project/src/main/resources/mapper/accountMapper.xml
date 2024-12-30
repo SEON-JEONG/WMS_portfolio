@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wms_project.mapper.AccountMapper">
+	
+	 <insert id="account_insert" parameterType="wms_project.dto.AccountDTO">
+	    INSERT INTO account (acode, acompany, aname, aindustry, ahp, anum, atype, afax, apost, aroad, addr, approve, adate)
+	    VALUES (#{acode}, #{acompany}, #{aname}, #{aindustry}, #{ahp}, #{anum}, #{atype}, #{afax}, #{apost}, #{aroad}, #{addr}, 'Y', now())
+	</insert>
+
+	<select id="search_company" resultType="String" parameterType="String">
+		SELECT COUNT(*) AS ctn FROM account WHERE acompany=#{acompany} ORDER BY aidx DESC 
+	</select>
+	
+	 <select id="account_ctn" resultType="String" parameterType="String">
+	    SELECT COUNT(*) AS ctn FROM account
+	</select>
+	
+	<select id="accountList" parameterType="Map" resultType="wms_project.dto.AccountDTO">
+		SELECT aidx, acompany, acode, anum, aname, ahp, aindustry, atype, apost, aroad, addr
+		FROM account
+		<if test="search != null">
+			WHERE acompany LIKE concat('%',#{search},'%')
+		</if>
+		ORDER BY aidx DESC
+		LIMIT ${startno},${endno}
+	</select>
+	
+	<select id="accountCtn" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*) FROM account 
+			<if test="search != null">
+				WHERE acompany LIKE concat('%',#{search},'%')
+			</if>
+	</select>
+	
+	<select id="accountListCtn" parameterType="Integer">
+	    SELECT COUNT(*) AS ctn FROM account WHERE approve = 'Y'
+	</select>
+	
+	<select id="accountIdx" resultType="wms_project.dto.AccountDTO" parameterType="String">
+		SELECT * FROM account WHERE aidx = #{aidx}
+	</select>
+	
+	<update id="accountModify" parameterType="wms_project.dto.AccountDTO">
+		UPDATE account SET acompany = #{acompany}, aname = #{aname}, aindustry = #{aindustry}, ahp = #{ahp}, anum = #{anum}, atype = #{atype}, 
+		afax = #{afax}, apost = #{apost}, aroad = #{aroad}, addr = #{addr}, amodify = now() WHERE aidx = #{aidx}
+	</update>
+
+	<update id="accountDelete"  parameterType="String">
+		UPDATE account SET approve ='N' where aidx = #{aidx}
+	</update>
+	
+</mapper>
