@@ -1,2 +1,0 @@
-# wms-final
-# wms-project
