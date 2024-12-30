@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wms_project.mapper.ConfigMapper">
+
+<select id="all" parameterType="Map" resultType="wms_project.dto.ConfigDTO">
+
+select * from member
+     		
+               where mpart = #{part1} <!-- 본사 또는 지점 -->    
+            <choose>
+                <when test="part2 == '이름'">
+                    AND mname LIKE CONCAT('%', #{search}, '%') <!-- 이름 검색 -->
+                </when>
+                <when test="part2 == '아이디'">
+                    AND mid LIKE CONCAT('%', #{search}, '%') <!-- 아이디 검색 -->
+                </when>
+                <when test="part2 == '연락처'">
+                    AND mhp LIKE CONCAT('%', #{search}, '%') <!-- 이메일 검색 -->
+                </when>
+            </choose>
+  
+        ORDER BY midx DESC
+        LIMIT #{startno}, #{items}
+     	
+</select>
+
+
+
+<select id="searchall" parameterType="Map" resultType="wms_project.dto.ConfigDTO">
+
+select * from member ORDER BY midx DESC LIMIT #{startno}, #{items}
+
+</select>
+
+<select id="Total" parameterType="wms_project.dto.ConfigDTO" resultType="Integer">
+    SELECT COUNT(*) 
+    FROM member 
+       
+</select>   
+
+
+
+<select id="totalsearch" parameterType="Map" resultType="Integer">
+    SELECT COUNT(*) 
+    FROM member 
+    WHERE mpart = #{part1} 
+    <choose>
+        <when test="part2 == '이름'">
+            AND mname LIKE CONCAT('%', #{search}, '%') <!-- 이름 검색 -->
+        </when>
+        <when test="part2 == '아이디'">
+            AND mid LIKE CONCAT('%', #{search}, '%') <!-- 아이디 검색 -->
+        </when>
+        <when test="part2 == '연락처'">
+            AND mhp LIKE CONCAT('%', #{search}, '%') <!-- 이메일 검색 -->
+        </when>
+    </choose>
+</select>     
+
+ 
+ 
+ <update id="update1" parameterType="wms_project.dto.ConfigDTO">
+ 
+ 	UPDATE member
+    SET approve = #{part3}
+    WHERE midx = #{midx}
+ 
+ </update>
+
+
+</mapper>

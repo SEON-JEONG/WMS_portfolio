@@ -1,0 +1,80 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.3.7-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'wms_project'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+	//web socket
+   implementation 'org.springframework.boot:spring-boot-starter-websocket'
+   
+   //json
+   implementation 'org.json:json:20240303'
+   implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+   
+   //xls, xlsx
+   implementation 'org.apache.poi:poi:4.1.2'
+   implementation 'org.apache.poi:poi-ooxml:4.1.2'
+
+   //jsp, jstl
+   implementation group: 'jakarta.servlet.jsp.jstl', name: 'jakarta.servlet.jsp.jstl-api', version: '3.0.2'
+   implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
+   //HttpServlet.request, response
+   compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+   //Dashboard에서 JSP, JSTL, ThymeLeaf 사용
+   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-jasper', version: '10.1.33'
+   
+   //mysql
+   implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+   runtimeOnly 'com.mysql:mysql-connector-j'
+   
+   //oracle
+	implementation 'com.oracle.database.jdbc:ojdbc11:23.3.0.23.09'
+   
+   //mybatis
+   implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+   testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+   
+   //fileupload
+   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+   implementation group: 'commons-net', name: 'commons-net', version: '3.11.1'
+   implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
+   implementation group: 'xalan', name: 'serializer', version: '2.7.2'
+   
+   compileOnly 'org.projectlombok:lombok:1.18.26' // 최신 버전 확인
+   annotationProcessor 'org.projectlombok:lombok:1.18.26' // 최신 버전 확인
+   
+   //compileOnly 'org.projectlombok:lombok'
+   //annotationProcessor 'org.projectlombok:lombok'
+   
+   //QR
+   implementation 'com.google.zxing:core:3.3.0'
+   implementation 'com.google.zxing:javase:3.4.1'
+   
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   developmentOnly 'org.springframework.boot:spring-boot-devtools'
+   providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   
+   implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
